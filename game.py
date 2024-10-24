@@ -34,6 +34,10 @@ game_over = False
 
 
 def draw_grid():
+    """
+       Draw the grid for the Quoridor game.
+       The grid is a 9x9 board where players can move their pawns.
+       """
     screen.fill(BACKGROUND_COLOR)
     for x in range(GRID_SIZE):
         for y in range(GRID_SIZE):
@@ -42,6 +46,10 @@ def draw_grid():
 
 
 def draw_walls():
+    """
+      Draw the vertical and horizontal walls on the board.
+      Walls are placed by players to block their opponent's movement.
+      """
     for wall in walls["VERTICAL"]:
         pygame.draw.rect(screen, WALL_COLOR, wall)
     for wall in walls["HORIZONTAL"]:
@@ -49,6 +57,17 @@ def draw_walls():
 
 
 def is_wall_blocking(x, y, direction):
+    """
+      Check if a wall is blocking the path in the specified direction.
+
+      Parameters:
+      x (int): X-coordinate of the pawn.
+      y (int): Y-coordinate of the pawn.
+      direction (str): Direction to check ('UP', 'DOWN', 'LEFT', 'RIGHT').
+
+      Returns:
+      bool: True if a wall blocks the path in the specified direction, False otherwise.
+      """
     if direction == 'UP':
         return any(wall.colliderect(pygame.Rect(x * SQUARE_SIZE, (y - 1) * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
                    for wall in walls["HORIZONTAL"])
@@ -64,12 +83,21 @@ def is_wall_blocking(x, y, direction):
 
 
 def draw_win_message(message):
+    """
+      Display a win message when a player wins the game.
+
+      Parameters:
+      message (str): The message to be displayed on the screen.
+      """
     font = pygame.font.SysFont(None, 48)
     text = font.render(message, True, (0, 255, 0))
     screen.blit(text, (SCREEN_WIDTH // 2 - text.get_width() // 2, SCREEN_HEIGHT // 2 - text.get_height() // 2))
 
 
 def draw_wall_counters():
+    """
+       Display the number of walls remaining for both players on the screen.
+       """
     text_p1 = font.render(f"Player 1 walls: {wall_counts[0]}", True, PAWN_COLOR[0])
     text_p2 = font.render(f"Player 2 walls: {wall_counts[1]}", True, PAWN_COLOR[1])
     screen.blit(text_p1, (20, SCREEN_HEIGHT - 40))
@@ -77,34 +105,55 @@ def draw_wall_counters():
 
 
 class QuoridorGame(TwoPlayerGame):
+    """
+      The QuoridorGame class represents the Quoridor game logic, extending the TwoPlayerGame from easyAI.
+      """
+
     def __init__(self, players):
-        # Initialize players
+        """
+              Initialize the game with a list of players and set up the initial board state.
+
+              Parameters:
+              players (list): List of Human_Player or AI_Player instances.
+              """
         self.players = players
         self.board = [[0 for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
 
-        # Each player has a pawn at the initial position
         self.pawns = [[4, 0], [4, 8]]  # Starting positions for player 1 and player 2
         self.walls = {"VERTICAL": [], "HORIZONTAL": []}
         self.previous_position = [[], []]
-        self.current_turn = current_turn  # Player 1 starts first
+        self.current_turn = current_turn
 
-        # Inherit turn management from TwoPlayerGame
         self.current_player = 1
 
     def switch_turn(self):
+        """
+                Switch to the next player's turn.
+                """
         self.current_turn = 1 - self.current_turn
         global current_turn
         current_turn = self.current_turn
 
-
     def draw_pawns(self):
+        """
+               Draw the players' pawns on the board.
+               """
         for i, pawn in enumerate(self.pawns):
             x = pawn[0] * SQUARE_SIZE + SQUARE_SIZE // 2
             y = pawn[1] * SQUARE_SIZE + SQUARE_SIZE // 2
             pygame.draw.circle(screen, PAWN_COLOR[i], (x, y), SQUARE_SIZE // 3)
 
-
     def is_move_blocked(self, start, end):
+        """
+                Check if a move from the start position to the end position is blocked by any walls.
+
+                Parameters:
+                start (list): Starting position of the pawn.
+                end (list): Ending position of the pawn.
+
+                Returns:
+                bool: True if the move is blocked, False otherwise.
+                """
         x1, y1 = start
         x2, y2 = end
 
@@ -128,22 +177,46 @@ class QuoridorGame(TwoPlayerGame):
                         return True
         return False
 
-
     def available_moves_from_position(self, current_position):
+        """
+            Get a list of available moves from the given position.
+
+            Parameters:
+            current_position (list): The current position of the pawn.
+
+            Returns:
+            list: A list of valid moves (positions) that the pawn can move to.
+            """
         moves = []
 
-        if current_position[1] > 0 and not self.is_move_blocked(current_position, [current_position[0], current_position[1] - 1]):  # Góra
+        if current_position[1] > 0 and not self.is_move_blocked(current_position,
+                                                                [current_position[0], current_position[1] - 1]):  # Góra
             moves.append([current_position[0], current_position[1] - 1])
-        if current_position[1] < GRID_SIZE - 1 and not self.is_move_blocked(current_position, [current_position[0], current_position[1] + 1]):  # Dół
+        if current_position[1] < GRID_SIZE - 1 and not self.is_move_blocked(current_position, [current_position[0],
+                                                                                               current_position[
+                                                                                                   1] + 1]):  # Dół
             moves.append([current_position[0], current_position[1] + 1])
-        if current_position[0] > 0 and not self.is_move_blocked(current_position, [current_position[0] - 1, current_position[1]]):  # Lewo
+        if current_position[0] > 0 and not self.is_move_blocked(current_position,
+                                                                [current_position[0] - 1, current_position[1]]):  # Lewo
             moves.append([current_position[0] - 1, current_position[1]])
-        if current_position[0] < GRID_SIZE - 1 and not self.is_move_blocked(current_position, [current_position[0] + 1, current_position[1]]):  # Prawo
+        if current_position[0] < GRID_SIZE - 1 and not self.is_move_blocked(current_position, [current_position[0] + 1,
+                                                                                               current_position[
+                                                                                                   1]]):  # Prawo
             moves.append([current_position[0] + 1, current_position[1]])
 
         return moves
 
     def bfs(self, start_pos, goal_row):
+        """
+               Use breadth-first search (BFS) to check if there is a valid path from start_pos to goal_row.
+
+               Parameters:
+               start_pos (list): The starting position of the pawn.
+               goal_row (int): The row to reach (8 for Player 1, 0 for Player 2).
+
+               Returns:
+               bool: True if there is a path to the goal row, False otherwise.
+               """
         queue = deque([start_pos])
         visited = set()
         visited.add(tuple(start_pos))
@@ -162,6 +235,17 @@ class QuoridorGame(TwoPlayerGame):
         return False
 
     def bfs_shortest_path(self, start, goal_row, walls=None):
+        """
+               Find the shortest path from start to the goal_row using BFS.
+
+               Parameters:
+               start (list): The starting position of the pawn.
+               goal_row (int): The row to reach.
+               walls (dict): Optional parameter for walls configuration.
+
+               Returns:
+               int: The shortest distance to the goal_row, or infinity if no path exists.
+               """
         """Find the shortest path from start to goal_row using BFS"""
         if walls is None:
             walls = self.walls
@@ -180,13 +264,18 @@ class QuoridorGame(TwoPlayerGame):
                 x, y = current[0] + dx, current[1] + dy
                 if (0 <= x < GRID_SIZE) and (0 <= y < GRID_SIZE):
                     if not is_wall_blocking(x, y,
-                                                 'LEFT' if dx == -1 else 'RIGHT' if dx == 1 else 'UP' if dy == -1 else 'DOWN'):
+                                            'LEFT' if dx == -1 else 'RIGHT' if dx == 1 else 'UP' if dy == -1 else 'DOWN'):
                         heapq.heappush(queue, (dist + 1, (x, y)))
 
         return float('inf')
 
-
     def is_path_to_goal(self):
+        """
+         Check if both players have a valid path to their respective goal rows.
+
+         Returns:
+         bool: True if both players can reach their goal row without being blocked, False otherwise.
+         """
         if not self.bfs(pawns[0], GRID_SIZE - 1):
             return False
 
@@ -196,6 +285,20 @@ class QuoridorGame(TwoPlayerGame):
         return True
 
     def is_wall_valid(self, wall, orientation):
+        """
+          Check if a wall placement is valid based on several criteria:
+          1. Wall must be within the grid boundaries.
+          2. Wall must not intersect with existing walls of the same orientation.
+          3. Wall must not intersect with walls of the opposite orientation.
+          4. Wall must not block all paths to the goal for either player.
+
+          Parameters:
+          wall (pygame.Rect): The wall to be placed.
+          orientation (str): The orientation of the wall ('VERTICAL' or 'HORIZONTAL').
+
+          Returns:
+          bool: True if the wall placement is valid, False otherwise.
+          """
         grid_width = GRID_SIZE - 1
         grid_height = GRID_SIZE - 1
 
@@ -227,6 +330,15 @@ class QuoridorGame(TwoPlayerGame):
         return True
 
     def highlight_wall(self, mouse_pos):
+        """
+         Highlight a potential wall placement based on the mouse position.
+
+         Parameters:
+         mouse_pos (tuple): The (x, y) coordinates of the mouse cursor.
+
+         This function draws a highlighted wall on the screen if the proposed
+         wall placement is valid according to the game rules.
+         """
         x, y = mouse_pos
         grid_x = x // SQUARE_SIZE
         grid_y = y // SQUARE_SIZE
@@ -244,7 +356,12 @@ class QuoridorGame(TwoPlayerGame):
                 pygame.draw.rect(screen, HIGHLIGHT_COLOR, wall)
 
     def possible_moves(self):
-        """ Return a list of all possible moves (pawn moves + wall placements) """
+        """
+              Get the list of possible moves for the current player.
+
+              Returns:
+              list: A list of valid moves for the current player.
+              """
         moves = []
 
         current_pawn_pos = self.pawns[self.current_turn]
@@ -266,15 +383,34 @@ class QuoridorGame(TwoPlayerGame):
 
         return moves
 
-
     def draw_move_dots(self):
+        """
+          Draw circles on the screen to indicate available moves for the current player's pawn.
+          The circles are drawn at the center of each valid move position.
+
+          This function calculates the available moves from the current position and
+          visualizes them on the game board.
+          """
         for move in self.available_moves_from_position(self.pawns[current_turn]):
             x = move[0] * SQUARE_SIZE + SQUARE_SIZE // 2
             y = move[1] * SQUARE_SIZE + SQUARE_SIZE // 2
             pygame.draw.circle(screen, MOVE_DOT_COLOR, (x, y), SQUARE_SIZE // 6)
 
     def evaluate_wall_impact(self, wall, orientation):
-        """Evaluate the strategic value of placing a wall"""
+        """
+          Evaluate the strategic value of placing a wall by comparing
+          the distances of both players to their goals before and after
+          the wall is placed.
+
+          Parameters:
+          wall (pygame.Rect): The wall to be placed.
+          orientation (str): The orientation of the wall ('VERTICAL' or 'HORIZONTAL').
+
+          Returns:
+          int: The score reflecting the strategic impact of placing the wall.
+               Positive values indicate a disadvantage for Player 1, while
+               negative values indicate an advantage for Player 2.
+          """
         x, y = wall.x // SQUARE_SIZE, wall.y // SQUARE_SIZE
 
         if orientation == "VERTICAL":
@@ -300,6 +436,15 @@ class QuoridorGame(TwoPlayerGame):
         return score
 
     def place_wall(self, mouse_pos):
+        """
+          Place a wall based on the mouse position if valid.
+          Updates the wall count for the current player and switches the turn.
+
+          Parameters:
+          mouse_pos (tuple): The (x, y) coordinates of the mouse cursor when a wall is placed.
+
+          This function checks if the wall placement is valid before adding it to the game state.
+          """
         x, y = mouse_pos
         grid_x = x // SQUARE_SIZE
         grid_y = y // SQUARE_SIZE
@@ -321,9 +466,16 @@ class QuoridorGame(TwoPlayerGame):
                     wall_counts[current_turn] -= 1
                     self.switch_turn()
 
-
     def make_move(self, move):
-        """ Execute a move. Moves are tuples ('MOVE' or 'WALL', coordinates) """
+        """
+         Execute a move, which can be a pawn move or wall placement.
+
+         Parameters:
+         move (tuple): A tuple containing the move type ('MOVE' or 'WALL') and the move data
+                       (coordinates for the move or wall).
+
+         This function updates the game state according to the type of move and the validity of the move.
+         """
         move_type, move_data = move
         possible_moves = self.possible_moves()
 
@@ -348,9 +500,17 @@ class QuoridorGame(TwoPlayerGame):
 
         self.switch_turn()
 
-
     def unmake_move(self, move):
-        """ Unmake a move (important for AI search algorithms like Negamax) """
+        """
+           Unmake a previously executed move, restoring the game state.
+
+           Parameters:
+           move (tuple): A tuple containing the move type ('MOVE' or 'WALL') and the move data
+                         (coordinates for the move or wall).
+
+           This function is important for implementing AI search algorithms that require
+           evaluating multiple potential game states.
+           """
         move_type, move_data = move
         self.switch_turn()
         if move_type == 'MOVE':
@@ -359,33 +519,49 @@ class QuoridorGame(TwoPlayerGame):
             wall_counts[self.current_turn] += 1
             try:
                 self.walls["VERTICAL"].remove(
-                    pygame.Rect(move_data[0] * SQUARE_SIZE, move_data[1] * SQUARE_SIZE - SQUARE_SIZE // 8, SQUARE_SIZE * 2, SQUARE_SIZE // 4))
+                    pygame.Rect(move_data[0] * SQUARE_SIZE, move_data[1] * SQUARE_SIZE - SQUARE_SIZE // 8,
+                                SQUARE_SIZE * 2, SQUARE_SIZE // 4))
             except ValueError:
                 pass
         elif move_type == 'WALL_HORIZONTAL':
             wall_counts[self.current_turn] += 1
             try:
                 self.walls["HORIZONTAL"].remove(
-                    pygame.Rect(move_data[0] * SQUARE_SIZE, move_data[1] * SQUARE_SIZE - SQUARE_SIZE // 8, SQUARE_SIZE * 2, SQUARE_SIZE // 4))
+                    pygame.Rect(move_data[0] * SQUARE_SIZE, move_data[1] * SQUARE_SIZE - SQUARE_SIZE // 8,
+                                SQUARE_SIZE * 2, SQUARE_SIZE // 4))
             except ValueError:
                 pass
 
-
     def win(self):
-        """ Check if the current player has won after making a valid move """
+        """
+           Check if the current player has won the game by reaching their goal row.
+
+           Returns:
+           bool: True if the current player has won, False otherwise.
+           """
         if self.current_turn == 0:
             return self.pawns[0][1] == GRID_SIZE - 1
         else:
             return self.pawns[1][1] == 0
 
-
     def is_over(self):
-        """ Check if the game is over """
+        """
+         Check if the game is over based on win conditions.
+
+         Returns:
+         bool: True if the game is over, False otherwise.
+         """
         return self.win()
 
-
     def show(self, mouse_pos):
-        """ Display the board (or update the Pygame screen) """
+        """
+           Display the game board and update the screen.
+
+           Parameters:
+           mouse_pos (tuple): The (x, y) coordinates of the mouse cursor for highlighting.
+
+           This function draws the grid, pawns, walls, and highlights potential wall placements.
+           """
         draw_grid()
         self.draw_pawns()
         draw_walls()
@@ -394,17 +570,25 @@ class QuoridorGame(TwoPlayerGame):
         pygame.display.flip()
 
     def scoring(self):
-        """Evaluate the current game state for the AI"""
+        """
+         Evaluate the current game state for AI decision-making.
+
+         Returns:
+         int: A score reflecting the desirability of the current state for the AI.
+               Higher scores indicate more favorable conditions for the AI player.
+         """
         if self.pawns[0][1] == GRID_SIZE - 1:  # Player 1 reached the last row
             return -1000
         if self.pawns[1][1] == 0:  # Player 2 reached the first row
-            return 1000000000
+            return 10000000000000000000
 
         wall_score = 0
         for x in range(GRID_SIZE - 1):
             for y in range(GRID_SIZE - 1):
-                vertical_wall = pygame.Rect(x * SQUARE_SIZE - SQUARE_SIZE // 8, y * SQUARE_SIZE, SQUARE_SIZE // 4, SQUARE_SIZE * 2)
-                horizontal_wall = pygame.Rect(x * SQUARE_SIZE, y * SQUARE_SIZE - SQUARE_SIZE // 8, SQUARE_SIZE * 2, SQUARE_SIZE // 4)
+                vertical_wall = pygame.Rect(x * SQUARE_SIZE - SQUARE_SIZE // 8, y * SQUARE_SIZE, SQUARE_SIZE // 4,
+                                            SQUARE_SIZE * 2)
+                horizontal_wall = pygame.Rect(x * SQUARE_SIZE, y * SQUARE_SIZE - SQUARE_SIZE // 8, SQUARE_SIZE * 2,
+                                              SQUARE_SIZE // 4)
                 if self.is_wall_valid(vertical_wall, "VERTICAL"):
                     wall_score += self.evaluate_wall_impact(vertical_wall, "VERTICAL")
                 if self.is_wall_valid(horizontal_wall, "HORIZONTAL"):
@@ -420,7 +604,14 @@ class QuoridorGame(TwoPlayerGame):
             score -= 200
         return score
 
+
 def main():
+    """
+       Main function to run the Quoridor game.
+
+       This function initializes the game loop, handles player input,
+       and updates the game state until the game is over.
+       """
     clock = pygame.time.Clock()
     global game_over
 
@@ -459,7 +650,7 @@ def main():
 
 
 if __name__ == "__main__":
-    ai_algo = Negamax(3)
+    ai_algo = ()
 
     game = QuoridorGame([Human_Player(), AI_Player(ai_algo)])
 
