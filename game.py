@@ -398,7 +398,7 @@ class QuoridorGame(TwoPlayerGame):
         if self.pawns[0][1] == GRID_SIZE - 1:  # Player 1 reached the last row
             return -1000
         if self.pawns[1][1] == 0:  # Player 2 reached the first row
-            return 1000
+            return 1000000000
 
         wall_score = 0
         for x in range(GRID_SIZE - 1):
@@ -425,7 +425,7 @@ def main():
     global game_over
 
     # Set up the game with AI
-    ai_algo = Negamax(3)
+    ai_algo = Negamax(2)
     game = QuoridorGame([Human_Player(), AI_Player(ai_algo)])
 
     while not game_over:
