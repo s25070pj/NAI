@@ -1,3 +1,5 @@
+import heapq
+
 import pygame
 import sys
 
@@ -159,6 +161,31 @@ class QuoridorGame(TwoPlayerGame):
 
         return False
 
+    def bfs_shortest_path(self, start, goal_row, walls=None):
+        """Find the shortest path from start to goal_row using BFS"""
+        if walls is None:
+            walls = self.walls
+
+        queue = [(0, start)]  # (distance, position)
+        visited = set()
+        while queue:
+            (dist, current) = heapq.heappop(queue)
+            if current[1] == goal_row:
+                return dist
+            if tuple(current) in visited:
+                continue
+            visited.add(tuple(current))
+
+            for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                x, y = current[0] + dx, current[1] + dy
+                if (0 <= x < GRID_SIZE) and (0 <= y < GRID_SIZE):
+                    if not is_wall_blocking(x, y,
+                                                 'LEFT' if dx == -1 else 'RIGHT' if dx == 1 else 'UP' if dy == -1 else 'DOWN'):
+                        heapq.heappush(queue, (dist + 1, (x, y)))
+
+        return float('inf')
+
+
     def is_path_to_goal(self):
         if not self.bfs(pawns[0], GRID_SIZE - 1):
             return False
@@ -172,27 +199,21 @@ class QuoridorGame(TwoPlayerGame):
         grid_width = GRID_SIZE - 1
         grid_height = GRID_SIZE - 1
 
-        # Ensure the wall is within grid bounds
         if orientation == "VERTICAL":
             if wall.x < 0 or wall.x > grid_width * SQUARE_SIZE or wall.y < 0 or wall.y > grid_height * SQUARE_SIZE:
-                print(f"Vertical Wall is out of bounds at position {wall.x}, {wall.y}")
                 return False
         elif orientation == "HORIZONTAL":
             if wall.x < 0 or wall.x > grid_width * SQUARE_SIZE or wall.y < 0 or wall.y > grid_height * SQUARE_SIZE:
-                print(f"Horizontal Wall is out of bounds at position {wall.x}, {wall.y}")
                 return False
 
-        # Check if the wall overlaps with another wall of the same orientation
         for existing_wall in walls[orientation]:
             if wall.colliderect(existing_wall):
-                print("Wall overlaps with another wall!")
                 return False
 
         # Check for intersections with walls of the opposite orientation
         opposite_orientation = "HORIZONTAL" if orientation == "VERTICAL" else "VERTICAL"
         for opposite_wall in walls[opposite_orientation]:
             if wall.colliderect(opposite_wall):
-                print("Wall intersects with an opposite wall!")
                 return False
 
         # Check if placing the wall blocks all paths to the goal
@@ -201,7 +222,6 @@ class QuoridorGame(TwoPlayerGame):
         walls[orientation].remove(wall)
 
         if not path_valid:
-            print("Wall placement blocks all paths!")
             return False
 
         return True
@@ -227,24 +247,20 @@ class QuoridorGame(TwoPlayerGame):
         """ Return a list of all possible moves (pawn moves + wall placements) """
         moves = []
 
-        # Add possible pawn moves (valid moves are determined by current position)
         current_pawn_pos = self.pawns[self.current_turn]
         pawn_moves = self.available_moves_from_position(current_pawn_pos)
         for move in pawn_moves:
             moves.append(('MOVE', move))
 
         if wall_counts[self.current_turn] > 0:
-            grid_width = GRID_SIZE - 1
-            grid_height = GRID_SIZE - 1
-            for x in range(grid_width):
-                for y in range(grid_height):
+            for x in range(max(0, current_pawn_pos[0] - 1), min(GRID_SIZE - 1, current_pawn_pos[0] + 1)):
+                for y in range(max(0, current_pawn_pos[1] - 1), min(GRID_SIZE - 1, current_pawn_pos[1] + 1)):
                     vertical_wall = pygame.Rect(x * SQUARE_SIZE - SQUARE_SIZE // 8, y * SQUARE_SIZE, SQUARE_SIZE // 4,
                                                 SQUARE_SIZE * 2)
-                    if self.is_wall_valid(vertical_wall, "VERTICAL"):
-                        moves.append(('WALL_VERTICAL', (x, y)))
-
                     horizontal_wall = pygame.Rect(x * SQUARE_SIZE, y * SQUARE_SIZE - SQUARE_SIZE // 8, SQUARE_SIZE * 2,
                                                   SQUARE_SIZE // 4)
+                    if self.is_wall_valid(vertical_wall, "VERTICAL"):
+                        moves.append(('WALL_VERTICAL', (x, y)))
                     if self.is_wall_valid(horizontal_wall, "HORIZONTAL"):
                         moves.append(('WALL_HORIZONTAL', (x, y)))
 
@@ -257,27 +273,31 @@ class QuoridorGame(TwoPlayerGame):
             y = move[1] * SQUARE_SIZE + SQUARE_SIZE // 2
             pygame.draw.circle(screen, MOVE_DOT_COLOR, (x, y), SQUARE_SIZE // 6)
 
-    def evaluate_wall_impact(self):
-        """
-        Evaluate potential wall placements and their impact on movement.
-        This function should return a score based on how walls affect both players.
-        """
-        wall_score = 0
-        for x in range(GRID_SIZE - 1):
-            for y in range(GRID_SIZE - 1):
-                vertical_wall = pygame.Rect(x * SQUARE_SIZE - SQUARE_SIZE // 8, y * SQUARE_SIZE, SQUARE_SIZE // 4,
-                                            SQUARE_SIZE * 2)
-                horizontal_wall = pygame.Rect(x * SQUARE_SIZE, y * SQUARE_SIZE - SQUARE_SIZE // 8, SQUARE_SIZE * 2,
-                                              SQUARE_SIZE // 4)
+    def evaluate_wall_impact(self, wall, orientation):
+        """Evaluate the strategic value of placing a wall"""
+        x, y = wall.x // SQUARE_SIZE, wall.y // SQUARE_SIZE
 
-                if self.is_wall_valid(vertical_wall, "VERTICAL"):
-                    wall_score += 10
+        if orientation == "VERTICAL":
+            self.walls["VERTICAL"].append(wall)
+        else:
+            self.walls["HORIZONTAL"].append(wall)
 
-                if self.is_wall_valid(horizontal_wall, "HORIZONTAL"):
-                    wall_score += 10
+        p1_dist_before = self.bfs_shortest_path(self.pawns[0], GRID_SIZE - 1)
+        p2_dist_before = self.bfs_shortest_path(self.pawns[1], 0)
+        p1_dist_after = self.bfs_shortest_path(self.pawns[0], GRID_SIZE - 1, self.walls)
+        p2_dist_after = self.bfs_shortest_path(self.pawns[1], 0, self.walls)
 
-        return wall_score
+        if orientation == "VERTICAL":
+            self.walls["VERTICAL"].pop()
+        else:
+            self.walls["HORIZONTAL"].pop()
 
+        score = 0
+        if p1_dist_after > p1_dist_before:
+            score += (p1_dist_after - p1_dist_before) * 5  # Penalize for harming player 1
+        if p2_dist_after > p2_dist_before:
+            score -= (p2_dist_after - p2_dist_before) * 10  # Reward for hindering player 2
+        return score
 
     def place_wall(self, mouse_pos):
         x, y = mouse_pos
@@ -336,17 +356,17 @@ class QuoridorGame(TwoPlayerGame):
         if move_type == 'MOVE':
             self.pawns[self.current_turn] = self.previous_position[self.current_turn]
         elif move_type == 'WALL_VERTICAL':
+            wall_counts[self.current_turn] += 1
             try:
                 self.walls["VERTICAL"].remove(
                     pygame.Rect(move_data[0] * SQUARE_SIZE, move_data[1] * SQUARE_SIZE - SQUARE_SIZE // 8, SQUARE_SIZE * 2, SQUARE_SIZE // 4))
-                wall_counts[self.current_turn] += 1
             except ValueError:
                 pass
         elif move_type == 'WALL_HORIZONTAL':
+            wall_counts[self.current_turn] += 1
             try:
                 self.walls["HORIZONTAL"].remove(
                     pygame.Rect(move_data[0] * SQUARE_SIZE, move_data[1] * SQUARE_SIZE - SQUARE_SIZE // 8, SQUARE_SIZE * 2, SQUARE_SIZE // 4))
-                wall_counts[self.current_turn] += 1
             except ValueError:
                 pass
 
@@ -354,10 +374,8 @@ class QuoridorGame(TwoPlayerGame):
     def win(self):
         """ Check if the current player has won after making a valid move """
         if self.current_turn == 0:
-            # Player 1 wins when reaching the last row (bottom row)
             return self.pawns[0][1] == GRID_SIZE - 1
         else:
-            # Player 2 wins when reaching the first row (top row)
             return self.pawns[1][1] == 0
 
 
@@ -376,26 +394,30 @@ class QuoridorGame(TwoPlayerGame):
         pygame.display.flip()
 
     def scoring(self):
-        """
-        This function returns the value of the current game state for the AI.
-        A higher value is better for the current player.
-        """
+        """Evaluate the current game state for the AI"""
         if self.pawns[0][1] == GRID_SIZE - 1:  # Player 1 reached the last row
             return -1000
-
         if self.pawns[1][1] == 0:  # Player 2 reached the first row
             return 1000
 
+        wall_score = 0
+        for x in range(GRID_SIZE - 1):
+            for y in range(GRID_SIZE - 1):
+                vertical_wall = pygame.Rect(x * SQUARE_SIZE - SQUARE_SIZE // 8, y * SQUARE_SIZE, SQUARE_SIZE // 4, SQUARE_SIZE * 2)
+                horizontal_wall = pygame.Rect(x * SQUARE_SIZE, y * SQUARE_SIZE - SQUARE_SIZE // 8, SQUARE_SIZE * 2, SQUARE_SIZE // 4)
+                if self.is_wall_valid(vertical_wall, "VERTICAL"):
+                    wall_score += self.evaluate_wall_impact(vertical_wall, "VERTICAL")
+                if self.is_wall_valid(horizontal_wall, "HORIZONTAL"):
+                    wall_score += self.evaluate_wall_impact(horizontal_wall, "HORIZONTAL")
+
         player1_position = self.pawns[0][1]
         player2_position = self.pawns[1][1]
-
-        if player2_position == 1:
-            return 500
-
-        score = (GRID_SIZE - 1 - player2_position) * 10
+        score = (GRID_SIZE - player2_position) * 10
         score -= player1_position * 10
-        score -= (player1_position - player2_position) * 5
-        score += self.evaluate_wall_impact()
+        score += (player1_position - player2_position) * 5
+        score += wall_score
+        if self.previous_position[self.current_turn] == self.pawns[self.current_turn]:
+            score -= 200
         return score
 
 def main():
