@@ -20,6 +20,7 @@ Uruchom skrypt podając trzy parametry:
 Przykład:
 ```bash
 python nazwa_pliku.py 30 75 60
+```
 
 ![image](https://github.com/user-attachments/assets/13a2ef6b-d20b-4b73-85a4-8806ce97a5f7)
 
