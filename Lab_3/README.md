@@ -36,3 +36,7 @@ python movie_alghoritm.py 1
 ```
 
 ![img.png](img.png)
+
+![image](https://github.com/user-attachments/assets/23566332-124f-4eca-9279-fbe6d1f90fbc)
+
+  ![image](https://github.com/user-attachments/assets/72abc706-34f9-4e7d-9a02-ca9987ffe305)
