@@ -13,7 +13,7 @@ Ten projekt wykorzystuje algorytm klasteryzacji K-Means do rekomendowania filmó
 Przed uruchomieniem projektu upewnij się, że masz zainstalowane wszystkie wymagane pakiety. Możesz je zainstalować, używając `pip`:
 
 ```bash
-pip install pandas scikit-learn
+pip install pandas scikit-learn requests
 ```
 
 ## Pliki
@@ -27,10 +27,12 @@ Do projektu dołączone są pliki z danymi:
 Aby uruchomić system rekomendacji dla określonego użytkownika, możesz użyć następującej komendy:
 
 ```bash
-python recommendation_script.py <user_id>
+python movie_alghoritm.py <user_id>
 ```
 Gdzie <user_id> to identyfikator użytkownika, dla którego chcesz uzyskać rekomendacje filmów. Na przykład:
 
 ```bash
-python recommendation_script.py 1
+python movie_alghoritm.py 1
 ```
+
+![img.png](img.png)
