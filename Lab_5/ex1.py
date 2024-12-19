@@ -33,7 +33,7 @@ def load_data(file_path):
     :param file_path: Path to the CSV file.
     :return: DataFrame containing the dataset.
     """
-    return pd.read_csv(file_path    )
+    return pd.read_csv(file_path)
 
 
 def prepare_data(df, feature_columns, target_column, threshold):
@@ -83,7 +83,7 @@ def evaluate_model(model, X_test, y_test):
 
 def main():
     # File path to the dataset
-    file_path = "seeds_dataset.csv"
+    file_path = "../Lab_4/resources/seeds_dataset.csv"
 
     # Load the dataset
     df = load_data(file_path)

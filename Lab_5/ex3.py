@@ -115,8 +115,8 @@ def main():
     print("Model saved as 'fashion_mnist_model.h5'.")
 
     print("Preprocessing custom images...")
-    tshirt_image = preprocess_image('tshirt.png')
-    dress_image = preprocess_image('dress.png')
+    tshirt_image = preprocess_image('Lab_5/tshirt.png')
+    dress_image = preprocess_image('Lab_5/dress.png')
 
     print("Predicting custom images...")
     tshirt_prediction = model.predict(np.expand_dims(tshirt_image, axis=0))
