@@ -1,52 +1,27 @@
 import cv2
 import numpy as np
-import pandas as pd
-import urllib.request
+import os
 
-# Wczytanie danych z pliku CSV
-file_path = '/mnt/data/flags.csv'
-flags_data = pd.read_csv(file_path, sep=';')
+# Folder z lokalnymi obrazami flag
+flags_folder = 'flags'
 
-# Mapowanie nazw krajów do linków z obrazami flag
-flags_dict = dict(zip(flags_data['name'], flags_data['image']))
+# Lista przykładowych krajów
+selected_countries = ['Polska', 'Niemcy', 'Francja']
 
-def fetch_flag_image(url):
+# Mapowanie nazw krajów do ścieżek obrazów flag
+flags_dict = {country: os.path.join(flags_folder, f"{country}.png") for country in selected_countries}
+
+
+def fetch_flag_image(file_path):
     try:
-        with urllib.request.urlopen(url) as response:
-            image_data = np.asarray(bytearray(response.read()), dtype="uint8")
-            flag_image = cv2.imdecode(image_data, cv2.IMREAD_COLOR)
-            return flag_image
+        flag_image = cv2.imread(file_path)
+        if flag_image is None:
+            raise ValueError("Nie udało się odczytać obrazu z pliku")
+        return flag_image
     except Exception as e:
-        print(f"Nie udało się pobrać obrazu z {url}: {e}")
+        print(f"Nie udało się pobrać obrazu z {file_path}: {e}")
         return None
 
-def draw_flag_on_frame(frame, flag, country_name):
-    """
-    Wyświetla flagę i nazwę kraju na ramce obrazu.
-
-    Args:
-        frame (np.ndarray): Główna ramka z kamerki.
-        flag (np.ndarray): Obraz flagi.
-        country_name (str): Nazwa kraju.
-
-    Returns:
-        np.ndarray: Ramka obrazu z dodaną flagą i nazwą kraju.
-    """
-    if flag is not None:
-        # Skalowanie flagi
-        flag_height, flag_width = flag.shape[:2]
-        scale_factor = 100 / flag_height  # Ustaw flagę na wysokość 100 px
-        flag_resized = cv2.resize(flag, (int(flag_width * scale_factor), 100))
-
-        # Wklejenie flagi w lewym górnym rogu
-        frame[10:10+flag_resized.shape[0], 10:10+flag_resized.shape[1]] = flag_resized
-
-    # Dodanie nazwy kraju
-    cv2.putText(
-        frame, country_name, (10, 130), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2
-    )
-
-    return frame
 
 def preprocess_image(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -65,7 +40,7 @@ def find_flag_contour(frame):
         if area > 500 and area > max_area:
             x, y, w, h = cv2.boundingRect(contour)
             aspect_ratio = w / float(h)
-            if 0.8 < aspect_ratio < 1.2:  # Przyjmujemy, że flaga jest mniej więcej kwadratowa
+            if 0.8 < aspect_ratio < 1.2:
                 flag_contour = (x, y, w, h)
                 max_area = area
     return flag_contour
@@ -84,14 +59,26 @@ def match_flag(detected_flag, flag_images):
     return matched_country
 
 
+def draw_flag_on_frame(frame, flag, country_name):
+    if flag is not None:
+        flag_height, flag_width = flag.shape[:2]
+        scale_factor = 100 / flag_height
+        flag_resized = cv2.resize(flag, (int(flag_width * scale_factor), 100))
+        frame[10:10+flag_resized.shape[0], 10:10+flag_resized.shape[1]] = flag_resized
+
+    cv2.putText(
+        frame, country_name, (10, 130), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2
+    )
+    return frame
+
+
 def main():
     cap = cv2.VideoCapture(0)
     if not cap.isOpened():
         print("Nie można uzyskać dostępu do kamerki.")
         return
 
-    # Pobranie wszystkich obrazów flag
-    flag_images = {name: fetch_flag_image(url) for name, url in flags_dict.items() if fetch_flag_image(url) is not None}
+    flag_images = {name: fetch_flag_image(path) for name, path in flags_dict.items() if fetch_flag_image(path) is not None}
 
     while True:
         ret, frame = cap.read()
@@ -103,10 +90,9 @@ def main():
         if flag_contour is not None:
             x, y, w, h = flag_contour
             detected_flag = frame[y:y+h, x:x+w]
-
             matched_country = match_flag(detected_flag, flag_images)
             if matched_country:
-                draw_flag_on_frame(frame, detected_flag, matched_country)
+                frame = draw_flag_on_frame(frame, detected_flag, matched_country)
 
         cv2.imshow("Rozpoznawanie Flag", frame)
 
