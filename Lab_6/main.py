@@ -2,6 +2,29 @@ import cv2
 import numpy as np
 import os
 
+"""
+Problem:
+- Flag Recognition and Classification Using Computer Vision
+
+Description:
+This program utilizes OpenCV to detect and classify national flags in real-time using a webcam. By matching detected flag regions with preloaded flag images, the program identifies the corresponding country and overlays the name on the live video feed.
+
+Workflow:
+1. Initialize a webcam feed to capture video frames.
+2. Load flag images for predefined countries into memory.
+3. Convert the captured frames to HSV color space for robust color-based processing.
+4. Use color detection to identify potential flag regions in the frames.
+5. Match detected flag regions with the preloaded flag images based on HSV color histograms.
+6. Display a bounding box around the detected flag and overlay the name of the matched country (if found).
+
+Key Features:
+- Real-time flag detection and classification.
+- Uses HSV color histograms to compare detected regions with known flags.
+- Highlights and labels detected flags on the video feed.
+
+Authors: Adrian Stoltmann, Kacper Tokarzewski
+"""
+
 flags_folder = 'flags'
 selected_countries = ['Irlandia', 'Niemcy', 'Francja']
 
