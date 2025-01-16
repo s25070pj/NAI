@@ -5,7 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fc019662-e51c-484a-abec-861960217720" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Lab_6/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Lab_6/flags/Irlandia.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Lab_6/flags.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Lab_6/flags/Polska.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Lab_6/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Lab_6/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -71,13 +75,14 @@
       <recent name="C:\Users\xKaku\PycharmProjects\QuoridorWithAI\Lab_5" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\xKaku\PycharmProjects\NAI\Lab_6\flags" />
       <recent name="C:\Users\xKaku\PycharmProjects\QuoridorWithAI\Lab_5" />
       <recent name="C:\Users\xKaku\PycharmProjects\QuoridorWithAI\Lab_4" />
       <recent name="C:\Users\xKaku\PycharmProjects\QuoridorWithAI\Lab_2" />
       <recent name="C:\Users\xKaku\PycharmProjects\QuoridorWithAI\Lab_1" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.gear_change">
+  <component name="RunManager">
     <configuration name="gear_change" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="QuoridorAgainstAI" />
       <option name="ENV_FILES" value="" />
@@ -149,7 +154,7 @@
       <workItem from="1728920177514" duration="1587000" />
       <workItem from="1730994775074" duration="2799000" />
       <workItem from="1734626896158" duration="6291000" />
-      <workItem from="1737057068180" duration="1738000" />
+      <workItem from="1737057068180" duration="4383000" />
     </task>
     <servers />
   </component>
@@ -157,15 +162,16 @@
     <option name="version" value="3" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/QuoridorWithAI$ex3.coverage" NAME="ex3 Coverage Results" MODIFIED="1734632331340" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Lab_5" />
-    <SUITE FILE_PATH="coverage/QuoridorWithAI$main.coverage" NAME="main Coverage Results" MODIFIED="1729796156749" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/QuoridorWithAI$game.coverage" NAME="game Coverage Results" MODIFIED="1729796501686" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/QuoridorWithAI$movie_alghoritm.coverage" NAME="movie_alghoritm Coverage Results" MODIFIED="1732038218740" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Lab_3" />
     <SUITE FILE_PATH="coverage/QuoridorAgainstAI$main.coverage" NAME="main Coverage Results" MODIFIED="1728921774832" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/QuoridorWithAI$svm_and_decision_tree.coverage" NAME="svm_and_decision_tree Coverage Results" MODIFIED="1734630468943" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Lab_4" />
-    <SUITE FILE_PATH="coverage/QuoridorWithAI$ex2.coverage" NAME="ex2 Coverage Results" MODIFIED="1734631767461" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Lab_5" />
+    <SUITE FILE_PATH="coverage/QuoridorWithAI$main.coverage" NAME="main Coverage Results" MODIFIED="1729796156749" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/QuoridorWithAI$ex1.coverage" NAME="ex1 Coverage Results" MODIFIED="1734631742886" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Lab_5" />
-    <SUITE FILE_PATH="coverage/QuoridorWithAI$test.coverage" NAME="test Coverage Results" MODIFIED="1730827849991" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/QuoridorWithAI$ex3.coverage" NAME="ex3 Coverage Results" MODIFIED="1734632331340" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Lab_5" />
     <SUITE FILE_PATH="coverage/QuoridorWithAI$gear_change.coverage" NAME="gear_change Coverage Results" MODIFIED="1730997411329" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Lab_2" />
+    <SUITE FILE_PATH="coverage/QuoridorWithAI$svm_and_decision_tree.coverage" NAME="svm_and_decision_tree Coverage Results" MODIFIED="1734630468943" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Lab_4" />
+    <SUITE FILE_PATH="coverage/QuoridorWithAI$game.coverage" NAME="game Coverage Results" MODIFIED="1729796501686" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/QuoridorWithAI$ex2.coverage" NAME="ex2 Coverage Results" MODIFIED="1734631767461" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Lab_5" />
+    <SUITE FILE_PATH="coverage/NAI$main.coverage" NAME="main Coverage Results" MODIFIED="1737061507532" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Lab_6" />
+    <SUITE FILE_PATH="coverage/QuoridorWithAI$movie_alghoritm.coverage" NAME="movie_alghoritm Coverage Results" MODIFIED="1732038218740" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Lab_3" />
+    <SUITE FILE_PATH="coverage/QuoridorWithAI$test.coverage" NAME="test Coverage Results" MODIFIED="1730827849991" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
