@@ -5,14 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fc019662-e51c-484a-abec-861960217720" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Lab_5/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Lab_5/cat.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Lab_5/dog.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Lab_5/dress.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Lab_5/tshirt.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Lab_5/ex1.py" beforeDir="false" afterPath="$PROJECT_DIR$/Lab_5/ex1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Lab_5/ex3.py" beforeDir="false" afterPath="$PROJECT_DIR$/Lab_5/ex3.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,7 +53,8 @@
     "Python.svm_and_decision_tree.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "lab6",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "C:/Users/xKaku/PycharmProjects/QuoridorWithAI/Lab_5",
     "node.js.detected.package.eslint": "true",
@@ -82,7 +76,7 @@
       <recent name="C:\Users\xKaku\PycharmProjects\QuoridorWithAI\Lab_1" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.gear_change">
     <configuration name="gear_change" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="QuoridorAgainstAI" />
       <option name="ENV_FILES" value="" />
@@ -138,8 +132,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-PY-242.23339.19" />
-        <option value="bundled-python-sdk-0029f7779945-399fe30bd8c1-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-242.23339.19" />
+        <option value="bundled-js-predefined-d6986cc7102b-deb605915726-JavaScript-PY-243.22562.220" />
+        <option value="bundled-python-sdk-0fc6c617c4bd-9a18a617cbe4-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-243.22562.220" />
       </set>
     </attachedChunks>
   </component>
@@ -154,6 +148,7 @@
       <workItem from="1728920177514" duration="1587000" />
       <workItem from="1730994775074" duration="2799000" />
       <workItem from="1734626896158" duration="6291000" />
+      <workItem from="1737057068180" duration="561000" />
     </task>
     <servers />
   </component>

@@ -11,15 +11,6 @@ flags_data = pd.read_csv(file_path, sep=';')
 flags_dict = dict(zip(flags_data['name'], flags_data['image']))
 
 def fetch_flag_image(url):
-    """
-    Pobiera obraz flagi z podanego URL.
-
-    Args:
-        url (str): URL obrazu flagi.
-
-    Returns:
-        np.ndarray: Obraz flagi jako macierz (lub None, jeśli nie udało się pobrać).
-    """
     try:
         with urllib.request.urlopen(url) as response:
             image_data = np.asarray(bytearray(response.read()), dtype="uint8")
@@ -57,19 +48,50 @@ def draw_flag_on_frame(frame, flag, country_name):
 
     return frame
 
+def preprocess_image(image):
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+    edged = cv2.Canny(blurred, 50, 150)
+    return edged
+
+
+def find_flag_contour(frame):
+    edged = preprocess_image(frame)
+    contours, _ = cv2.findContours(edged, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    flag_contour = None
+    max_area = 0
+    for contour in contours:
+        area = cv2.contourArea(contour)
+        if area > 500 and area > max_area:
+            x, y, w, h = cv2.boundingRect(contour)
+            aspect_ratio = w / float(h)
+            if 0.8 < aspect_ratio < 1.2:  # Przyjmujemy, że flaga jest mniej więcej kwadratowa
+                flag_contour = (x, y, w, h)
+                max_area = area
+    return flag_contour
+
+
+def match_flag(detected_flag, flag_images):
+    min_diff = float('inf')
+    matched_country = None
+    for country, flag_image in flag_images.items():
+        resized_flag = cv2.resize(detected_flag, (flag_image.shape[1], flag_image.shape[0]))
+        diff = cv2.absdiff(flag_image, resized_flag)
+        diff_sum = np.sum(diff)
+        if diff_sum < min_diff:
+            min_diff = diff_sum
+            matched_country = country
+    return matched_country
+
+
 def main():
-    """
-    Główna funkcja programu. Wyświetla flagę na podstawie wybranego kraju.
-    """
     cap = cv2.VideoCapture(0)
     if not cap.isOpened():
         print("Nie można uzyskać dostępu do kamerki.")
         return
 
-    # Wybierz przykładowy kraj (możesz dodać logikę dynamicznego wyboru)
-    example_country = "Poland"
-    flag_url = flags_dict.get(example_country)
-    flag_image = fetch_flag_image(flag_url)
+    # Pobranie wszystkich obrazów flag
+    flag_images = {name: fetch_flag_image(url) for name, url in flags_dict.items() if fetch_flag_image(url) is not None}
 
     while True:
         ret, frame = cap.read()
@@ -77,13 +99,17 @@ def main():
             print("Nie udało się odczytać obrazu z kamerki.")
             break
 
-        # Dodaj flagę i nazwę kraju do ramki
-        frame = draw_flag_on_frame(frame, flag_image, example_country)
+        flag_contour = find_flag_contour(frame)
+        if flag_contour is not None:
+            x, y, w, h = flag_contour
+            detected_flag = frame[y:y+h, x:x+w]
 
-        # Wyświetlenie obrazu
+            matched_country = match_flag(detected_flag, flag_images)
+            if matched_country:
+                draw_flag_on_frame(frame, detected_flag, matched_country)
+
         cv2.imshow("Rozpoznawanie Flag", frame)
 
-        # Wyjście z programu po wciśnięciu klawisza 'q'
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
